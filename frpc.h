@@ -534,7 +534,8 @@ public:
      * an empty vector when passed into the function, and the implementation
      * can resize and populate it with the appropriate data.
      * param[out] eyeCoordinates
-     * The function shall return the estimated eye centers for the input image.
+     * (Optional) The function may choose to return the estimated eye centers
+     * for the input face image.
      */
     virtual ReturnStatus
     createTemplate(
