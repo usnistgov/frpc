@@ -541,7 +541,7 @@ public:
         const Image &face,
         TemplateRole role,
         std::vector<uint8_t> &templ,
-        std::vector<EyePair> &eyeCoordinates) = 0;
+        EyePair &eyeCoordinates) = 0;
 
     /**
      * @brief This function compares two proprietary templates and outputs a
