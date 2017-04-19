@@ -106,8 +106,8 @@ enum class ReturnCode {
     * files or names seem incorrect
     */
     InputLocationError,
-	/** There was a problem setting or accessing the GPU */
-	GPUError,
+    /** There was a problem setting or accessing the GPU */
+    GPUError,
     /** Vendor-defined failure */
     VendorError
 };
@@ -138,11 +138,11 @@ operator<<(
     case ReturnCode::TemplateFormatError:
         return (s << "Template file is an incorrect format or defective");
     case ReturnCode::EnrollDirError:
-            return (s << "An operation on the enrollment directory failed");
+        return (s << "An operation on the enrollment directory failed");
     case ReturnCode::InputLocationError:
-            return (s << "Cannot locate the input data - the input file or names seem incorrect");
-	case ReturnCode::GPUError:
-		return (s << "Problem setting or accessing the GPU");
+        return (s << "Cannot locate the input data - the input file or names seem incorrect");
+    case ReturnCode::GPUError:
+	return (s << "Problem setting or accessing the GPU");
     case ReturnCode::VendorError:
         return (s << "Vendor-defined error");
     default:
