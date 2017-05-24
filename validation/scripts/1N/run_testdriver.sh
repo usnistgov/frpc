@@ -60,6 +60,11 @@ enrollDir=$outputDir/enroll
 rm -rf $outputDir $enrollDir 
 mkdir -p $enrollDir
 
+# Find out whether CPU or GPU implementation
+root=$(pwd)
+libstring=$(ls $root/lib/libfrpc_11_*_?_[cg]pu.so)
+processor=$(basename $libstring | awk -F"_" '{ print $5 }' | awk -F"." '{ print $1 }')
+
 # Usage: ../bin/validate1N enroll|finalize|search -c configDir -e enrollDir -o outputDir -h outputStem -i inputFile -t numForks
 #   enroll|finalize|search: task to process
 #   configDir: configuration directory
@@ -67,7 +72,7 @@ mkdir -p $enrollDir
 #   outputDir: directory where output logs are written to
 #   outputStem: the string to prefix the output filename(s) with
 #   inputFile: input file containing images to process (required for enroll and search tasks)
-#   numForks: number of processes to fork.  1 means don't fork 
+#   numForks: number of processes to fork.
 echo "------------------------------"
 echo " Running 1:N validation"
 echo "------------------------------"
@@ -95,7 +100,9 @@ rm -rf $outputDir $enrollDir
 mkdir -p $enrollDir
 
 # Set number of child processes to fork()
-numForks=4
+if [ "$processor" == "cpu" ]; then
+	numForks=4
+fi
 
 echo -n "Running Enrollment (Multiple Processes) "
 # Enrollment

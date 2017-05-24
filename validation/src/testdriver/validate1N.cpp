@@ -298,52 +298,41 @@ main(int argc, char* argv[])
 	    }
 
 	    bool parent = false;
-	    if (numForks == 1) {
-	        if (action == Action::Enroll_1N)
-	            return enroll(
-	                    implPtr,
-	                    configDir,
-	                    inputFileVector[0],
-	                    outputDir + "/" + outputFileStem + "." + to_string(action) + ".0",
-	                    outputDir + "/edb.0",
-	                    outputDir + "/manifest.0");
-	        else if (action == Action::Search_1N)
-	            return search(
-	                    implPtr,
-	                    configDir,
-	                    enrollDir,
-	                    inputFileVector[0],
-	                    outputDir + "/" + outputFileStem + "." + to_string(action) + ".0");
-	    } else if (numForks > 1) {
-	        int i = 0;
-	        for (auto &inputFile : inputFileVector) {
-	            /* Fork */
-	            switch(fork()) {
-	            case 0: /* Child */
-	                if (action == Action::Enroll_1N)
-                        return enroll(
-                                implPtr,
-                                configDir,
-                                inputFile,
-                                outputDir + "/" + outputFileStem + "." + to_string(action) + "." + to_string(i),
-                                outputDir + "/edb." + to_string(i),
-                                outputDir + "/manifest." + to_string(i));
-	                else if (action == Action::Search_1N)
-	                    return search(
-	                            implPtr,
-	                            configDir,
-	                            enrollDir,
-	                            inputFile,
-	                            outputDir + "/" + outputFileStem + "." + to_string(action) + "." + to_string(i));
-	            case -1: /* Error */
-	                cerr << "Problem forking" << endl;
-	                break;
-	            default: /* Parent */
-	                parent = true;
-	                break;
+	    int i = 0;
+	    ReturnStatus ret;
+	    for (auto &inputFile : inputFileVector) {
+	        /* Fork */
+	        switch(fork()) {
+	        case 0: /* Child */
+	            ret = implPtr->setGPU(0);
+	            if (ret.code != ReturnCode::Success) {
+	                cerr << "setGPU() returned error code: "
+	                        << ret.code << "." << endl;
+	                return FAILURE;
 	            }
-	            i++;
+	            if (action == Action::Enroll_1N)
+	                return enroll(
+	                        implPtr,
+	                        configDir,
+	                        inputFile,
+	                        outputDir + "/" + outputFileStem + "." + to_string(action) + "." + to_string(i),
+	                        outputDir + "/edb." + to_string(i),
+	                        outputDir + "/manifest." + to_string(i));
+	            else if (action == Action::Search_1N)
+	                return search(
+	                        implPtr,
+	                        configDir,
+	                        enrollDir,
+	                        inputFile,
+	                        outputDir + "/" + outputFileStem + "." + to_string(action) + "." + to_string(i));
+	        case -1: /* Error */
+	            cerr << "Problem forking" << endl;
+	            break;
+	        default: /* Parent */
+	            parent = true;
+	            break;
 	        }
+	        i++;
 	    }
 
 	    /* Parent -- wait for children */
