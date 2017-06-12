@@ -25,7 +25,6 @@ function mergeEDB() {
 	edb=$dir/tmp.edb
 	manifest=$dir/tmp.manifest
 	currOffset=0
-	firstentry="true"
 	for f in $dir/manifest.*
 	do
 		seq=`basename $f | awk -F"." '{ print $2 }'`
@@ -33,15 +32,8 @@ function mergeEDB() {
 		do
 			id=`echo $line | awk '{ print $1 }'`
 			size=`echo $line | awk '{ print $2 }'`
-			offset=`echo $line | awk '{ print $3 }'`
-			if [ "$firstentry" == "true" ]; then
-				echo "$id $size $offset" >> $manifest
-				firstentry="false"
-			else
-				newOffset=$((currOffset+size))
-				echo "$id $size $newOffset" >> $manifest	
-				currOffset=$((currOffset+size))
-			fi
+			echo "$id $size $currOffset" >> $manifest
+			currOffset=$((currOffset+size))
 		done < $f	
 		cat $dir/edb.$seq >> $edb
 	done
@@ -153,3 +145,4 @@ if [ $retEnrollment -eq 0 ] && [ $retFinalize -eq 0 ] && [ $retSearch -eq 0 ]; t
 else
 	echo "There were errors during validation.  Please ensure you've followed the validation instructions in the README.txt file."
 fi
+
