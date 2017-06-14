@@ -54,7 +54,7 @@ mkdir -p $enrollDir
 
 # Find out whether CPU or GPU implementation
 root=$(pwd)
-libstring=$(ls $root/lib/libfrpc_11_*_?_[cg]pu.so)
+libstring=$(ls $root/lib/libfrpc_1N_*_?_[cg]pu.so)
 processor=$(basename $libstring | awk -F"_" '{ print $5 }' | awk -F"." '{ print $1 }')
 
 # Usage: ../bin/validate1N enroll|finalize|search -c configDir -e enrollDir -o outputDir -h outputStem -i inputFile -t numForks
